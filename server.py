@@ -359,36 +359,53 @@ def cmd_chat(body):
     if not messages:
         return {'ok': False, 'msg': 'Нет сообщений'}
 
+    if not OPENAI_KEY:
+        return {'ok': False, 'msg': '❌ API ключ не настроен. Создай файл .env с OPENAI_API_KEY'}
+
     import urllib.request
+    import time
 
     api_messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-    for m in messages[-15:]:
+    for m in messages[-10:]:
         api_messages.append({"role": m.get("role", "user"), "content": m.get("content", "")})
 
-    try:
-        data = json.dumps({
-            "model": "gpt-4o-mini",
-            "messages": api_messages,
-            "max_tokens": 500,
-            "temperature": 0.7
-        }).encode('utf-8')
+    # Retry with backoff on 429
+    for attempt in range(3):
+        try:
+            data = json.dumps({
+                "model": "gpt-4o-mini",
+                "messages": api_messages,
+                "max_tokens": 300,
+                "temperature": 0.7
+            }).encode('utf-8')
 
-        req = urllib.request.Request(
-            'https://api.openai.com/v1/chat/completions',
-            data=data,
-            headers={
-                'Content-Type': 'application/json',
-                'Authorization': f'Bearer {OPENAI_KEY}'
-            }
-        )
+            req = urllib.request.Request(
+                'https://api.openai.com/v1/chat/completions',
+                data=data,
+                headers={
+                    'Content-Type': 'application/json',
+                    'Authorization': f'Bearer {OPENAI_KEY}'
+                }
+            )
 
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            result = json.loads(resp.read())
-            reply = result['choices'][0]['message']['content']
-            return {'ok': True, 'msg': reply}
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                result = json.loads(resp.read())
+                reply = result['choices'][0]['message']['content']
+                return {'ok': True, 'msg': reply}
 
-    except Exception as e:
-        return {'ok': False, 'msg': f'Ошибка API: {e}'}
+        except urllib.error.HTTPError as e:
+            if e.code == 429:
+                wait = (attempt + 1) * 3
+                if attempt < 2:
+                    time.sleep(wait)
+                    continue
+                return {'ok': False, 'msg': '⏳ Слишком много запросов. Подождите 10 секунд.'}
+            else:
+                return {'ok': False, 'msg': f'❌ Ошибка API: {e.code}'}
+        except Exception as e:
+            return {'ok': False, 'msg': f'❌ Ошибка: {e}'}
+
+    return {'ok': False, 'msg': '❌ Превышено количество попыток'}
 
 
 if __name__ == '__main__':
