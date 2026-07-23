@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S.</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="arc arc-1"></div>
+                <div class="arc arc-2"></div>
+                <div class="arc arc-3"></div>
+                <div class="core"></div>
+            </div>
+            <h1>J.A.R.V.I.S.</h1>
+            <div class="subtitle" id="status">Initializing...</div>
+        </header>
+
+        <main>
+            <!-- Voice Visualizer -->
+            <div class="visualizer" id="visualizer">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            </div>
+
+            <!-- Transcript -->
+            <div class="transcript" id="transcript">Awaiting your command, Sir.</div>
+
+            <!-- Mic Button -->
+            <div class="mic-area">
+                <button class="mic-btn" id="micBtn">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
+                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                        <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Text Input -->
+            <div class="input-group">
+                <input type="text" id="textInput" placeholder="Enter command, Sir..." autocomplete="off">
+                <button class="send-btn" id="sendBtn">→</button>
+            </div>
+
+            <!-- Quick Commands -->
+            <div class="quick-cmds">
+                <button class="qbtn" data-cmd="open finder">📁 Finder</button>
+                <button class="qbtn" data-cmd="open safari">🌐 Safari</button>
+                <button class="qbtn" data-cmd="open terminal">⌨️ Terminal</button>
+                <button class="qbtn" data-cmd="open spotify">🎵 Spotify</button>
+                <button class="qbtn" data-cmd="open vscode">💻 VS Code</button>
+                <button class="qbtn" data-cmd="open telegram">💬 Telegram</button>
+                <button class="qbtn" data-cmd="volume up">🔊 Vol+</button>
+                <button class="qbtn" data-cmd="volume down">🔉 Vol-</button>
+                <button class="qbtn" data-cmd="battery">🔋 Battery</button>
+                <button class="qbtn" data-cmd="weather">🌤 Weather</button>
+                <button class="qbtn" data-cmd="system info">💻 System</button>
+                <button class="qbtn" data-cmd="time">⏰ Time</button>
+            </div>
+
+            <!-- Chat History -->
+            <div class="chat" id="chat"></div>
+        </main>
+
+        <!-- Server Status -->
+        <footer>
+            <span class="server-dot" id="serverDot"></span>
+            <span id="serverStatus">Checking server...</span>
+        </footer>
+    </div>
+
+    <script src="jarvis.js"></script>
+</body>
+</html>
